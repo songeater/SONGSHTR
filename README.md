@@ -1,25 +1,25 @@
 ## What is this?
-A neural network that can generate musical samples based on a song that it has been fed.  The output does not generally sound “like” the song that was fed in, but each input song tends towards its own musical signature.  The network is therefore both songeater and SONGSHTR.
+A neural network that can generate musical samples inspired by a song that it has been fed.  While the output does not generally sound “like” the song that was fed in, each input song tends to produce its own signature.  The network is therefore both songeater and SONGSHTR.
 
-## Technically...
+## AKA...
 An LSTM+VAE neural network implemented in Keras that trains on raw audio (wav) files and can generate new wav files.
 
 ## Hasn't this been done before?
 Yes.  [Karpathy](http://karpathy.github.io/2015/05/21/rnn-effectiveness/) came first and we are all followers.  
 
-My model feeds on raw audio (as opposed to MIDI files or musical notation)… so [GRUV](https://github.com/MattVitelli/GRUV) would be the closest comparison.  Since it too was written in Python/Keras, I’ve borrowed liberally from the code, especially the processing and backend stuff.  Thank you to Matt & Aran.
+My model feeds on raw audio (as opposed to MIDI files or musical notation)… so [GRUV](https://github.com/MattVitelli/GRUV) would be the closest comparison.  Since GRUV was written in Python/Keras, I’ve borrowed liberally from the code, especially the processing and backend stuff (although I could never actually get the program to run).  Thank you to Matt & Aran.
 
 [This](http://www.asimovinstitute.org/analyzing-deep-learning-tools-music/) is a summary of other things that are out there.
 
 ## So what's new?
 Two major changes to the char-rnn/GRUV type models:
-- Add a VAE to a Karpathy-style char-rnn: Karpathy’s char-rnn succeeds in creating interesting text by changing the output’s “temperature” during the generation phase.  This is possible because the character-set of any text is finite/small/one-hot coded, and so the output of char-rnn can be a probability distribution of all possible characters.  Given some set of seed characters, we can control how likely/unlikely the next character predicted by the model will be, and by setting an appropriate threshold we can avoid the model spitting out banal and repetitive text.  This wouldn’t work with raw audio since our wav input/outputs are real numbers that cannot be one-hot coded (well, they can… but not elegantly).  So a Variational Auto-Encoder is tacked on to the base LSTM architecture… and otherwise the model works very much like char-rnn.  The addition of the VAE makes a marked difference to the repetitiveness of the generated music.
+- Add a VAE to a Karpathy-style char-rnn: char-rnn succeeds in creating interesting text by changing the output’s “temperature” during the generation phase.  This is only possible because the character-set of any text is finite/small/one-hot coded, and so the output of char-rnn can be structured as a probability distribution of all the possible characters.  Given some set of seed characters, we can use this probability distribution to control how likely/unlikely the next character predicted by the model will be.  By setting an appropriate threshold we can avoid the model spitting out banal and repetitive text.  This wouldn’t work with raw audio since our wav input/outputs are real numbers that cannot be one-hot coded (well, they _can_… but not elegantly).  So a [Variational Auto-Encoder](https://blog.keras.io/building-autoencoders-in-keras.html) is tacked on to the base LSTM architecture… and otherwise the model works very much like char-rnn.  The addition of the VAE makes a marked difference to the repetitiveness of the generated music.
 - DCT domain in addition to FFT: The DCT domain generates songs within a narrower frequency range and adds coherence/clarity.  FFT models capture the full frequency spectrum and have a more ethereal quality.
 
 In addition, there was a lot of hyper-parameter tweaking.  Since the aim of this exercise was to create aesthetically pleasing sounds, it never made sense to fit to metrics such as validation loss or perplexity.  All tweaking was purely subjective, which is a problem since I do not have a good ear.
-- I mostly worked on 3-10 minute songs.  Backdrifts, the 9th, Harvest Moon, Johnny-Be-Goode, etc.
+- I mostly worked on 3-10 minute songs.  Backdrifts, the 9th, Harvest Moon, Johnny-Be-Goode, etc.  Songs that had been high-pass filtered above 500hz tended to produce more interesting samples.
 - Single to 3 layered LSTM models.  128 to 1024 neurons per layer.  
 - The single-layer, 128 neuron models could be trained on my non-GPU-possessing laptop in about 30 minutes.  I found that generative quality peaked around 5 epochs (2-3000 iterations).  Some models really tailed off after that while others held on for 15+ epochs.  The larger 1024-neuron models were trained on an AWS-p2 instance and took about an hour to get through 5 epochs.   The largest 3 layer, 1024 neuron models took 3-4 hours. Again, training beyond 5 epochs brought marginal changes at best.  While training benefits clearly peter out quite too soon (a troubling sign for a more traditional use-case), it actually didn’t hurt in this instance since this was enough time for the models to start generating interesting samples.
 - Once a model is trained up, it can be used to generate songs fairly quickly, even on my laptop a 3 minute song took 5-7 minutes to put out.
-- The produced songs DID NOT sound like what was fed into them.  This program does NOT “remix” songs – ok not always, sometimes Radiohead came out as something that sounds like Radiohead.
+- The produced songs DID NOT sound like what was fed into them.  This program does NOT “remix” songs – ok not always, sometimes Radiohead came out as something that sounded something like Radiohead.
 - I post-processed in Audacity.  Normalization, click-removal, equalization, low/high-pass filters, reverbs, stacking up multiple generations of songs produced by a model, etc.  What I did not do was add clips from any source other than the wav files generated by SONGSHTR.
