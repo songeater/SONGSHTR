@@ -27,6 +27,6 @@ In addition, there was a lot of hyper-parameter tweaking.  Since the aim of this
 - I post-processed in Audacity.  Normalization, click-removal, equalization, low/high-pass filters, reverbs, stacking up multiple generations of songs produced by a model, etc.  What I did not do was add soundclips from any source other than the wav files given to me by SONGSHTR.
 
 ## All right, show us what we've got here...
-Ambient is one description of it.  Which is another way of saying the compositions are on the slow-building side - best appreciated if you have some time to just let them be.  Brian Eno, it ain't.  Also headphones recommended, muddy speakers is not the name of my band.
+Ambient is one description of it.  Which is another way of saying the compositions are slow-building - best if you have some time to just let them be.  Brian Eno, this is not.  Also headphones recommended.
 
 <iframe width="100%" height="450" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/317091057&amp;color=ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false"></iframe>
